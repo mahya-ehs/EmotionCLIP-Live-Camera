@@ -62,6 +62,7 @@ def init_distributed_device(args: argparse.Namespace):
         torch.distributed.barrier()
         args.distributed = True
 
+    device = 'cuda:0'
     if args.device_mode == 'cuda' and torch.cuda.is_available():
         if args.distributed and not args.no_set_device_rank:
             device = f'cuda:{args.local_rank}'

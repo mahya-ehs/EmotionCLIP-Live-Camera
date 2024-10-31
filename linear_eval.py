@@ -25,6 +25,7 @@ from src.datasets.liris_accede import LirisAccede
 from src.engine.utils import set_random_seed
 from src.engine.logger import setup_logger
 
+import joblib
 
 @dataclass
 class EvalArgs(argparse.Namespace):
@@ -39,7 +40,7 @@ class EvalArgs(argparse.Namespace):
     seed: int = 2022
     video_len: int = 8
     device: str = 'cuda:0'
-    dataloader_workers: int = 4
+    dataloader_workers: int = 0
     batch_size: int = 128
     cache_dir: str = './data/cache'
 
@@ -68,8 +69,12 @@ def extract_features(
             features = F.normalize(features, dim=-1)
         all_features.append(features)
         all_targets.append(targets)
+        print(f"features: {features.shape}")
+        print(f"targets: {targets.shape}")
     all_features = torch.cat(all_features).cpu().numpy()
     all_targets = torch.cat(all_targets).cpu().numpy()
+    print(f"all features: {all_features}")
+    print(f"all targets: {all_targets}")
     return all_features, all_targets
 
 
@@ -289,6 +294,8 @@ def main():
     
     # train linear classifier
     linear_clf.fit(X_train, y_train)
+    joblib.dump(linear_clf, 'linear_clf_model.joblib')
+    
     p_val = linear_clf.predict_proba(X_val)
     if args.has_test_set:
         p_test = linear_clf.predict_proba(X_test)

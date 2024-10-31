@@ -1,21 +1,18 @@
 import os
 import os.path as osp
 from typing import Callable, Optional, Literal
-import math
 from operator import itemgetter
 import math
 
 import torch
 from torch.utils.data import Dataset
-import torchvision
 from torchvision import transforms
 from torchvision.transforms import functional as F
 import pandas as pd
 import numpy as np
 from PIL import Image
 from tqdm import tqdm
-from rich import print as rprint
-# import cv2
+
 
 from ..models.tokenizer import tokenize
 
@@ -76,14 +73,13 @@ def bbox_to_mask(bbox: list[float], target_shape: tuple[int, int]) -> torch.Tens
     mask = torch.zeros(target_shape[1], target_shape[0])
     if len(bbox) == 0:
         return mask
-    mask[bbox[0]:bbox[2], bbox[1]:bbox[3]] = 1
+    mask[bbox[1][0]:bbox[1][2], bbox[1][1]:bbox[1][3]] = 1
     return mask
-
 
 # num_frames statistics. max: 299, min: 101, mean: 167, std: 53
 class BoLD(Dataset):
     def __init__(self, 
-        data_folder: str = '/ocean/projects/iri180005p/shared/BOLD_public',
+        data_folder: str = 'D:/BOLD_public',
         video_len: int = 8,
         split: Literal['train', 'val'] = 'train',
         sampling_strategy: str = 'uniform_all',
@@ -103,7 +99,7 @@ class BoLD(Dataset):
         self.template = template if template else lambda x: x
         self.class_names = CLASS_NAMES
         
-        self.video_folder = osp.join(self.data_folder, 'mmextract')
+        self.video_folder = osp.join('F:/BOLD_public', 'mmextract')
         self.annotation_folder = osp.join(self.data_folder, 'annotations')
         self.joint_folder = osp.join(self.data_folder, 'joints')
         
@@ -133,6 +129,7 @@ class BoLD(Dataset):
             all_joints[video_id] = joints
         return all_joints
     
+    
     def _generate_all_bboxes(self):
         all_joints = self._load_all_joints()
         self.all_bboxes = []
@@ -140,7 +137,12 @@ class BoLD(Dataset):
             video_id = self.annotations.loc[i, 'video_id']
             joints = all_joints[video_id]
             person_joints = joints[joints[:, 1] == self.annotations.loc[i, 'person_id']]
-            bboxes = dict(np.apply_along_axis(joints_to_bbox, 1, person_joints))
+            bboxes = {}
+            # Replaced original code v
+            for i, joint in enumerate(person_joints):
+                bbox = joints_to_bbox(joint)
+                bboxes[i] = bbox
+            #bboxes = dict(np.apply_along_axis(joints_to_bbox_debug, 1, person_joints))
             self.all_bboxes.append(bboxes)
             
         
@@ -150,10 +152,11 @@ class BoLD(Dataset):
 
     def __getitem__(self, i):
         video_id = self.annotations.loc[i, 'video_id']
+        video_id = video_id.replace('/','\\')
         start_frame = self.annotations.loc[i, 'start_frame']
         end_frame = self.annotations.loc[i, 'end_frame']
         clip_folder = osp.join(self.video_folder, video_id)
-        
+        clip_folder = clip_folder.replace('\\', '/')
         all_frame_names = os.listdir(clip_folder)
         if self.sampling_strategy == 'random_all':
             frames_to_be_used = sorted(np.random.choice(all_frame_names, size=self.video_len, replace=False))
@@ -164,7 +167,9 @@ class BoLD(Dataset):
         frames = []
         bboxes = []
         for frame_name in frames_to_be_used:
-            frame = Image.open(osp.join(clip_folder, frame_name))
+            f = osp.join(clip_folder, frame_name)
+            f = f.replace('\\','/')
+            frame = Image.open(f)
             bbox = self.all_bboxes[i].get(self._fname_to_id(frame_name), [])
             frames.append(frame)
             bboxes.append(bbox)

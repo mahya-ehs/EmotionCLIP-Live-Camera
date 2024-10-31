@@ -10,6 +10,7 @@ exps/
 .nlpaug/
 *.out
 *.pt
+vit_b_32-laion2b_e16-af8dbd0c.pth
 
 
 ###########
@@ -146,3 +147,6 @@ dmypy.json
 
 # vscode
 .vscode/
+src/pretrained/vit_b_32-laion2b_e16-af8dbd0c.pth
+src/pretrained/vit_b_32-laion2b_e16-af8dbd0c.pth
+src/pretrained/vit_b_32-laion2b_e16-af8dbd0c.pth
