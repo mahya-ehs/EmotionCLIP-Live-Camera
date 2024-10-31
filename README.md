@@ -1,3 +1,17 @@
+# EmotionCLIP Classifications on Webcams
+
+This is a university project for the course Affective Computing in University of Oulu.
+The project is forked directly from EmotionCLIP's Github page.
+
+The aim of the project is to learn about the methods used in EmotionCLIP, and then building an application using EmotionCLIP and running statistical metrics to gauge performance.
+
+Everything that existed before the fork is not our work, including the rest of the frontpage
+
+
+
+
+
+
 # Learning Emotion Representations from Verbal and Nonverbal Communication
 
 This is a Pytorch implementation of the [EmotionCLIP paper](https://openaccess.thecvf.com/content/CVPR2023/papers/Zhang_Learning_Emotion_Representations_From_Verbal_and_Nonverbal_Communication_CVPR_2023_paper.pdf):
