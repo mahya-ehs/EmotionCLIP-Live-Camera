@@ -5,11 +5,28 @@ The project is forked directly from EmotionCLIP's Github page.
 
 The aim of the project is to learn about the methods used in EmotionCLIP, and then building an application using EmotionCLIP and running statistical metrics to gauge performance.
 
-Everything that existed before the fork is not our work, including the rest of the frontpage
+## Usage
+If you are here to test our part of the project, there are two files that are interesting to run;
 
+demo.py is our main file, running EmotionCLIP on a webcam.
+The charm of this project is to be able to create any classifier you want.
+Therefore, we have some predefined classifiers at the top of this file which are commented out.
+to use these classifiers, just uncomment them, or create your own classifier.
 
+linear_eval.py is run in order to do get some metrics, this file was created by the team behind EmotionCLIP; Zhang, Sitao and Pan, Yimu and Wang and James Z.
+However, we were required to do some debugging and a few alterations ourselves.
 
+## Acknowledgments
+Everything that existed before the fork is the work of the team behind EmotionCLIP, including the rest of this Github Frontpage.
+Thanks to Zhang, Sitao and Pan, Yimu and Wang and James Z for an interesting project to learn from.
 
+<br/>
+
+-----
+<br/>
+<br/>
+<br/>
+<br/>
 
 
 # Learning Emotion Representations from Verbal and Nonverbal Communication
